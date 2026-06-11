@@ -34,6 +34,7 @@ import androidx.core.text.buildSpannedString
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.element.android.compound.theme.ElementTheme
+import io.element.android.compound.theme.avatarColors
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.text.rememberTypeface
@@ -74,6 +75,9 @@ class MentionSpanTheme(val currentUserId: UserId) {
     private val paddingValues = PaddingValues(start = 4.dp, end = 6.dp)
     internal val paddingValuesPx = mutableStateOf(0 to 0)
     internal val typeface = mutableStateOf(Typeface.DEFAULT)
+    internal var avatarColorPairs: List<Pair<Int, Int>> = emptyList()
+        private set
+    internal val avatarGapPx = mutableStateOf(0)
 
     /**
      * Updates the styles of the mention spans based on the [ElementTheme] and [currentUserId].
@@ -87,6 +91,7 @@ class MentionSpanTheme(val currentUserId: UserId) {
         otherBackgroundColor = ElementTheme.colors.bgBadgePrimary.toArgb()
 
         typeface.value = ElementTheme.typography.fontBodyLgMedium.rememberTypeface().value
+        avatarColorPairs = avatarColors().map { it.background.toArgb() to it.foreground.toArgb() }
         val density = LocalDensity.current
         val layoutDirection = LocalLayoutDirection.current
         paddingValuesPx.value = remember(paddingValues, density, layoutDirection) {
@@ -96,6 +101,7 @@ class MentionSpanTheme(val currentUserId: UserId) {
                 leftPadding to rightPadding
             }
         }
+        avatarGapPx.value = remember(density) { with(density) { 4.dp.roundToPx() } }
     }
 }
 
